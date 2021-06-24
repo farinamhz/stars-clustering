@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from sklearn.cluster import KMeans
+from sklearn.cluster import KMeans, AgglomerativeClustering
 from sklearn import preprocessing
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -68,14 +68,16 @@ def d_preprocessing(df2):
 def kmeans_clustering(dataset_tocluster, dataset_copy):
     dataset_tocluster = dataset_tocluster.drop(['Type'], axis=1)
     kmeans = KMeans(n_clusters=6)
-    kmeans.fit(dataset_tocluster)
-    dataset_copy['cluster'] = kmeans.labels_
+    # kmeans.fit(dataset_tocluster)
+    preds = kmeans.fit_predict(dataset_tocluster)
+    dataset_copy['cluster_1'] = kmeans.labels_
+    print("*** K-Means ***")
     print(kmeans.inertia_)
-    print(metrics.homogeneity_score(dataset_copy['Type'], dataset_copy['cluster']))
-    print(metrics.completeness_score(dataset_copy['Type'], dataset_copy['cluster']))
-    print(metrics.v_measure_score(dataset_copy['Type'], dataset_copy['cluster']))
-    print(metrics.adjusted_rand_score(dataset_copy['Type'], dataset_copy['cluster']))
-    print(metrics.adjusted_mutual_info_score(dataset_copy['Type'], dataset_copy['cluster']))
+    print(metrics.homogeneity_score(dataset_copy['Type'], dataset_copy['cluster_1']))
+    print(metrics.completeness_score(dataset_copy['Type'], dataset_copy['cluster_1']))
+    print(metrics.v_measure_score(dataset_copy['Type'], dataset_copy['cluster_1']))
+    print(metrics.adjusted_rand_score(dataset_copy['Type'], dataset_copy['cluster_1']))
+    print(metrics.adjusted_mutual_info_score(dataset_copy['Type'], dataset_copy['cluster_1']))
 
     # print(round(ari_kmeans, 2))
     return kmeans, dataset_copy
