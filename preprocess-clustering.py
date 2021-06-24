@@ -85,6 +85,24 @@ def kmeans_clustering(dataset_tocluster, dataset_copy):
 
 kmeans, dataset_copy = kmeans_clustering(dataset, dataset_copy)
 
+
+def agglomerative_clustering(dataset_tocluster, dataset_copy):
+    dataset_tocluster = dataset_tocluster.drop(['Type'], axis=1)
+    agglomerative = AgglomerativeClustering(n_clusters=3, linkage="ward")
+    preds = agglomerative.fit_predict(dataset_tocluster)
+    dataset_copy['cluster_2'] = agglomerative.labels_
+    print("\n"+"*** Hierarchical(Agglomerative) ***")
+    print(kmeans.inertia_)
+    print(metrics.homogeneity_score(dataset_copy['Type'], dataset_copy['cluster_2']))
+    print(metrics.completeness_score(dataset_copy['Type'], dataset_copy['cluster_2']))
+    print(metrics.v_measure_score(dataset_copy['Type'], dataset_copy['cluster_2']))
+    print(metrics.adjusted_rand_score(dataset_copy['Type'], dataset_copy['cluster_2']))
+    print(metrics.adjusted_mutual_info_score(dataset_copy['Type'], dataset_copy['cluster_2']))
+
+    return agglomerative, dataset_copy
+
+
+agglomerative, dataset_copy = agglomerative_clustering(dataset, dataset_copy)
 # print(dataset_copy)
 
 # cluster_list = list(dataset_copy['cluster'])
