@@ -23,7 +23,7 @@ def without_preprocess(df_1):
     return df_1
 
 
-dataset = without_preprocess(dataset)
+# dataset = without_preprocess(dataset)
 
 
 def label_encoding(df1):
@@ -34,7 +34,7 @@ def label_encoding(df1):
     return df1
 
 
-# dataset = label_encoding(dataset)
+dataset = label_encoding(dataset)
 
 
 def corr_plot(df_corr):
@@ -62,7 +62,32 @@ def d_preprocessing(df2):
     return df2
 
 
-# dataset = d_preprocessing(dataset)
+dataset = d_preprocessing(dataset)
+
+
+def print_result(dataset_copy, name ):
+    cluster_list = list(dataset_copy[name])
+    type_list = list(dataset_copy['Type'])
+    total_len = len(type_list)
+    result_list = [0] * total_len
+
+    index_lists = [[] for i in range(6)]
+    for i in range(total_len):
+        index_lists[cluster_list[i]].append(i)
+
+    for i in range(6):
+        frequency = [0] * 6
+        for item in index_lists[i]:
+            frequency[type_list[item]] += 1
+        mx = max(frequency)
+        idx = frequency.index(mx)
+        for item in index_lists[i]:
+            result_list[item] = idx
+    counter = 0
+    for i in range(total_len):
+        if type_list[i] == result_list[i]:
+            counter += 1
+    print(counter/total_len*100)
 
 
 def kmeans_clustering(dataset_tocluster, dataset_copy):
@@ -72,18 +97,10 @@ def kmeans_clustering(dataset_tocluster, dataset_copy):
     preds = kmeans.fit_predict(dataset_tocluster)
     dataset_copy['cluster_1'] = kmeans.labels_
     print("*** K-Means ***")
-    print(kmeans.inertia_)
-    print(metrics.homogeneity_score(dataset_copy['Type'], dataset_copy['cluster_1']))
-    print(metrics.completeness_score(dataset_copy['Type'], dataset_copy['cluster_1']))
-    print(metrics.v_measure_score(dataset_copy['Type'], dataset_copy['cluster_1']))
-    print(metrics.adjusted_rand_score(dataset_copy['Type'], dataset_copy['cluster_1']))
-    print(metrics.adjusted_mutual_info_score(dataset_copy['Type'], dataset_copy['cluster_1']))
-
-    # print(round(ari_kmeans, 2))
-    return kmeans, dataset_copy
+    print_result(dataset_copy, 'cluster_1')
 
 
-kmeans, dataset_copy = kmeans_clustering(dataset, dataset_copy)
+kmeans_clustering(dataset, dataset_copy)
 
 
 def agglomerative_clustering(dataset_tocluster, dataset_copy):
@@ -91,24 +108,8 @@ def agglomerative_clustering(dataset_tocluster, dataset_copy):
     agglomerative = AgglomerativeClustering(n_clusters=3, linkage="ward")
     preds = agglomerative.fit_predict(dataset_tocluster)
     dataset_copy['cluster_2'] = agglomerative.labels_
-    print("\n"+"*** Hierarchical(Agglomerative) ***")
-    print(kmeans.inertia_)
-    print(metrics.homogeneity_score(dataset_copy['Type'], dataset_copy['cluster_2']))
-    print(metrics.completeness_score(dataset_copy['Type'], dataset_copy['cluster_2']))
-    print(metrics.v_measure_score(dataset_copy['Type'], dataset_copy['cluster_2']))
-    print(metrics.adjusted_rand_score(dataset_copy['Type'], dataset_copy['cluster_2']))
-    print(metrics.adjusted_mutual_info_score(dataset_copy['Type'], dataset_copy['cluster_2']))
-
-    return agglomerative, dataset_copy
+    print("\n" + "*** Hierarchical(Agglomerative) ***")
+    print_result(dataset_copy, 'cluster_2')
 
 
-agglomerative, dataset_copy = agglomerative_clustering(dataset, dataset_copy)
-# print(dataset_copy)
-
-# cluster_list = list(dataset_copy['cluster'])
-# type_list = list(dataset_copy['Type'])
-
-# for i in range(6):
-#     for j in range(len(cluster_list)):
-#         if cluster_list[j] == i:
-#             max([type_list])
+agglomerative_clustering(dataset, dataset_copy)
