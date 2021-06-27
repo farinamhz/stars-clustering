@@ -4,14 +4,12 @@ from sklearn.cluster import KMeans, AgglomerativeClustering
 from sklearn import preprocessing
 import matplotlib.pyplot as plt
 import seaborn as sns
-# from sklearn.metrics import adjusted_rand_score, completeness_score
-import sklearn.metrics as metrics
 from sklearn.preprocessing import StandardScaler
 
 
 def read_data():
     dataset = pd.read_csv("Stars-dataset.csv")
-    dataset_copy = dataset
+    dataset_copy = dataset.copy()
     return dataset, dataset_copy
 
 
@@ -23,7 +21,7 @@ def without_preprocess(df_1):
     return df_1
 
 
-# dataset = without_preprocess(dataset)
+dataset = without_preprocess(dataset)
 
 
 def label_encoding(df1):
@@ -34,7 +32,7 @@ def label_encoding(df1):
     return df1
 
 
-dataset = label_encoding(dataset)
+# dataset = label_encoding(dataset)
 
 
 def corr_plot(df_corr):
@@ -51,18 +49,16 @@ def corr_plot(df_corr):
 
 
 def d_preprocessing(df2):
-    # A_M,Color and Spectral have no corr with type
-    # df2 = df2.drop(['A_M', 'Color', 'Spectral_Class'], axis=1)
-    df2.groupby("Type")["Color"].mean()
-    # df2.groupby("Type")["A_M"].mean()
-    # df2.groupby("Type")["Spectral_Class"].mean()
-    # df2.groupby("Type")["R"].mean()
+    # A_M and Color no corr with type
+    df2 = df2.drop(['A_M'], axis=1)
+    df2 = df2.drop(['Color'], axis=1)
+    df2.groupby("Type")["R"].mean()
     sc = StandardScaler()
     df2 = pd.DataFrame(sc.fit_transform(df2), columns=df2.columns)
     return df2
 
 
-dataset = d_preprocessing(dataset)
+# dataset = d_preprocessing(dataset)
 
 
 def print_result(dataset_copy, name ):
